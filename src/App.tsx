@@ -1,6 +1,7 @@
 import './styles/App.css';
 import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout/Layout';
+import { ContactForm } from './feautres/ContactForm/ContactForm';
 import { Home } from './feautres/Home/Home';
 
 export const App = () => {
@@ -8,6 +9,7 @@ export const App = () => {
     <Layout>
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/new-contact' element={<ContactForm />} />
       </Routes>
     </Layout>
   );

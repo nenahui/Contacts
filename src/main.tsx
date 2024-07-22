@@ -11,7 +11,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <ConfigProvider theme={{ algorithm: [theme.compactAlgorithm, theme.darkAlgorithm] }}>
+        <ConfigProvider theme={{ algorithm: theme.compactAlgorithm }}>
           <App />
         </ConfigProvider>
       </BrowserRouter>

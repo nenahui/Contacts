@@ -1,3 +1,9 @@
+import { Contact } from '../../components/Contact/Contact';
+
 export const Home = () => {
-  return <>Home Page</>;
+  return (
+    <>
+      <Contact />
+    </>
+  );
 };
