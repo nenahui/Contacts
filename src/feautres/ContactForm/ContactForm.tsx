@@ -1,20 +1,33 @@
-import { Button, Flex, Form, Input } from 'antd';
+import React, { useState } from 'react';
+import { Button, Empty, Flex, Form, Image, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import type { FieldType } from '../../types';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import type { IContact } from '../../types';
+import { selectIsCreating } from './contactFormSlice';
+import { createContact } from './contactFormThunks';
 
 export const ContactForm = () => {
+  const dispatch = useAppDispatch();
+  const isCreating = useAppSelector(selectIsCreating);
   const navigate = useNavigate();
+  const [form] = Form.useForm<IContact>();
+  const [imagePreview, setImagePreview] = useState('');
 
-  const onFinish = (values: FieldType) => {
-    console.log('Success:', values);
+  const onFinish = async (contact: IContact) => {
+    await dispatch(createContact(contact));
+    navigate('/');
+  };
+
+  const imageChange = (url: string) => {
+    setImagePreview((prevState) => (prevState += url));
   };
 
   const onCancel = () => navigate('/');
 
   return (
-    <Form layout={'vertical'} onFinish={onFinish}>
+    <Form layout={'vertical'} onFinish={onFinish} form={form}>
       <Flex gap={'middle'} vertical>
-        <Form.Item<FieldType>
+        <Form.Item<IContact>
           className={'m-0'}
           label={'Name'}
           name={'name'}
@@ -23,7 +36,7 @@ export const ContactForm = () => {
           <Input placeholder={'Enter name…'} autoComplete={'off'} />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<IContact>
           className={'m-0'}
           label={'Phone'}
           name={'phone'}
@@ -32,25 +45,37 @@ export const ContactForm = () => {
           <Input placeholder={'Enter phone…'} autoComplete={'off'} />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<IContact>
           className={'m-0'}
           label={'E-Mail'}
           name={'email'}
-          rules={[{ required: true, message: 'This is a required field…' }]}
+          rules={[{ required: true, message: 'This is a required field…', type: 'email' }]}
         >
           <Input placeholder={'Enter email…'} autoComplete={'off'} />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<IContact>
           className={'m-0'}
           label={'Image'}
           name={'image'}
           rules={[{ required: true, message: 'This is a required field…' }]}
         >
-          <Input placeholder={'Enter image url…'} autoComplete={'off'} />
+          <Input
+            placeholder={'Enter image url…'}
+            autoComplete={'off'}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => imageChange(e.target.value)}
+          />
         </Form.Item>
 
-        <Button type={'primary'} htmlType={'submit'}>
+        <Form.Item label={'Image preview'} className={'m-0'}>
+          {imagePreview.length === 0 ? (
+            <Empty description={'No image'} />
+          ) : (
+            <Image src={imagePreview} width={200} alt={'Contact image incorrect'} />
+          )}
+        </Form.Item>
+
+        <Button type={'primary'} htmlType={'submit'} loading={isCreating}>
           Save
         </Button>
         <Button onClick={onCancel} danger>
