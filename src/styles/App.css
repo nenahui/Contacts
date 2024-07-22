@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+BE+VLG:wght@300&display=swap');
+
 *,
 *::before,
 *::after {
@@ -11,8 +13,13 @@
   transform: translate(-50%, -50%);
 }
 
+body {
+  background: #1f1f1f;
+  color: #fff;
+}
+
 .container {
-  max-width: 400px;
+  max-width: 350px;
   margin: 0 auto;
   padding: 1rem;
 }
