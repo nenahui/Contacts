@@ -10,6 +10,7 @@ export const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/new-contact' element={<ContactForm />} />
+        <Route path='contact/:id/edit' element={<ContactForm />} />
       </Routes>
     </Layout>
   );

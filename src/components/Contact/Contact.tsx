@@ -1,6 +1,13 @@
-import { EllipsisOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
-import { Button, Card, Flex, Image, Modal, Spin, Typography } from 'antd';
 import React, { Suspense, useState } from 'react';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EllipsisOutlined,
+  MailOutlined,
+  PhoneOutlined,
+} from '@ant-design/icons';
+import { Button, Card, Flex, Image, Modal, Spin, Typography } from 'antd';
+import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectContactDeleting,
@@ -48,18 +55,23 @@ export const Contact: React.FC<Props> = ({ contact }) => {
         <Button type={'text'} size={'large'} onClick={showModal} icon={<EllipsisOutlined />} />
         <Modal
           footer={[
-            <Button type={'primary'} key={'edit-btn'}>
-              Edit
-            </Button>,
-            <Button
-              type={'primary'}
-              key={'delete-btn'}
-              onClick={onDelete}
-              loading={contactDeleting}
-              danger
-            >
-              Delete
-            </Button>,
+            <Flex justify={'end'} gap={'middle'} key={'modal-footer'}>
+              <Link to={`contact/${contact.id}/edit`}>
+                <Button type={'primary'} icon={<EditOutlined />}>
+                  Edit
+                </Button>
+              </Link>
+
+              <Button
+                type={'primary'}
+                icon={<DeleteOutlined />}
+                onClick={onDelete}
+                loading={contactDeleting}
+                danger
+              >
+                Delete
+              </Button>
+            </Flex>,
           ]}
           title={contactInfo?.name}
           open={open}

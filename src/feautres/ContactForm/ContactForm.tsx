@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Empty, Flex, Form, Image, Input } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import type { IContact } from '../../types';
 import { selectIsCreating } from './contactFormSlice';
-import { createContact } from './contactFormThunks';
+import { createContact, editContact } from './contactFormThunks';
 
 export const ContactForm = () => {
+  const { id } = useParams();
   const dispatch = useAppDispatch();
   const isCreating = useAppSelector(selectIsCreating);
   const navigate = useNavigate();
@@ -14,6 +15,12 @@ export const ContactForm = () => {
   const [imagePreview, setImagePreview] = useState('');
 
   const onFinish = async (contact: IContact) => {
+    if (id) {
+      await dispatch(editContact({ ...contact, id }));
+      navigate('/');
+      return;
+    }
+
     await dispatch(createContact(contact));
     navigate('/');
   };

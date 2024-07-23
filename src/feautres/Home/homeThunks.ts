@@ -34,10 +34,3 @@ export const deleteContact = createAsyncThunk<void, string, { state: RootState }
     await axiosApi.delete(`contacts/${contactId}.json`);
   }
 );
-
-export const editContact = createAsyncThunk<void, IApiContact, { state: RootState }>(
-  'home/editContact',
-  async (contactData) => {
-    await axiosApi.put(`contacts/${contactData.id}.json`, contactData);
-  }
-);
