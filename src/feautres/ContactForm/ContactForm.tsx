@@ -4,7 +4,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import type { IContact } from '../../types';
 import { fetchContactInfo } from '../Home/homeThunks';
-import { selectContactInfo, selectIsCreating, selectIsLoading } from './contactFormSlice';
+import {
+  selectContactInfo,
+  selectIsCreating,
+  selectIsEditing,
+  selectIsLoading,
+} from './contactFormSlice';
 import { createContact, editContact } from './contactFormThunks';
 import { motion } from 'framer-motion';
 
@@ -13,6 +18,7 @@ export const ContactForm = () => {
   const dispatch = useAppDispatch();
   const isCreating = useAppSelector(selectIsCreating);
   const isLoading = useAppSelector(selectIsLoading);
+  const isEditing = useAppSelector(selectIsEditing);
   const contactInfo = useAppSelector(selectContactInfo);
   const navigate = useNavigate();
   const [form] = Form.useForm<IContact>();
@@ -73,7 +79,11 @@ export const ContactForm = () => {
               name={'name'}
               rules={[{ required: true, message: 'This is a required field…' }]}
             >
-              <Input placeholder={'Enter name…'} autoComplete={'off'} disabled={isLoading} />
+              <Input
+                placeholder={'Enter name…'}
+                autoComplete={'off'}
+                disabled={isLoading || isEditing}
+              />
             </Form.Item>
           </motion.div>
 
@@ -105,7 +115,11 @@ export const ContactForm = () => {
               name={'email'}
               rules={[{ required: true, message: 'This is a required field…', type: 'email' }]}
             >
-              <Input placeholder={'Enter email…'} autoComplete={'off'} disabled={isLoading} />
+              <Input
+                placeholder={'Enter email…'}
+                autoComplete={'off'}
+                disabled={isLoading || isEditing}
+              />
             </Form.Item>
           </motion.div>
 
@@ -127,7 +141,7 @@ export const ContactForm = () => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setImagePreview(e.target.value)
                 }
-                disabled={isLoading}
+                disabled={isLoading || isEditing}
               />
             </Form.Item>
           </motion.div>
@@ -154,7 +168,11 @@ export const ContactForm = () => {
             className={'mb-10'}
           >
             <Flex gap={'middle'} vertical>
-              <Button type={'primary'} htmlType={'submit'} loading={isCreating || isLoading}>
+              <Button
+                type={'primary'}
+                htmlType={'submit'}
+                loading={isCreating || isLoading || isEditing}
+              >
                 Save
               </Button>
               <Button onClick={onCancel} danger>
