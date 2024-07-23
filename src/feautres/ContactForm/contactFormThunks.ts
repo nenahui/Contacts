@@ -16,3 +16,12 @@ export const editContact = createAsyncThunk<void, IApiContact, { state: RootStat
     await axiosApi.put(`contacts/${contact.id}.json`, contact);
   }
 );
+
+export const fetchContactInfoForEdit = createAsyncThunk<IContact, string, { state: RootState }>(
+  'home/fetchContactInfo',
+  async (contactId) => {
+    const { data } = await axiosApi.get(`contacts/${contactId}.json`);
+
+    return data;
+  }
+);

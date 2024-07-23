@@ -6,7 +6,7 @@ import {
   MailOutlined,
   PhoneOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Flex, Image, Modal, Spin, Typography } from 'antd';
+import { Avatar, Button, Card, Flex, Image, Modal, Spin, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -47,10 +47,13 @@ export const Contact: React.FC<Props> = ({ contact }) => {
   return (
     <Card size={'small'}>
       <Flex justify={'space-between'} align={'center'}>
-        <div>
-          <Text className={'d-block'}>{contact.name}</Text>
-          <Text type={'secondary'}>{contact.phone}</Text>
-        </div>
+        <Flex gap={'middle'} align={'center'}>
+          <Avatar src={contact.image} size={'large'} />
+          <div>
+            <Text className={'d-block'}>{contact.name}</Text>
+            <Text type={'secondary'}>{contact.phone}</Text>
+          </div>
+        </Flex>
 
         <Button type={'text'} size={'large'} onClick={showModal} icon={<EllipsisOutlined />} />
         <Modal

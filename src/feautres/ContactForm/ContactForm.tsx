@@ -1,18 +1,45 @@
-import React, { useState } from 'react';
 import { Button, Empty, Flex, Form, Image, Input } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import type { IContact } from '../../types';
-import { selectIsCreating } from './contactFormSlice';
+import { fetchContactInfo } from '../Home/homeThunks';
+import { selectContactInfo, selectIsCreating, selectIsLoading } from './contactFormSlice';
 import { createContact, editContact } from './contactFormThunks';
 
 export const ContactForm = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const isCreating = useAppSelector(selectIsCreating);
+  const isLoading = useAppSelector(selectIsLoading);
+  const contactInfo = useAppSelector(selectContactInfo);
   const navigate = useNavigate();
   const [form] = Form.useForm<IContact>();
   const [imagePreview, setImagePreview] = useState('');
+
+  const getInfo = useCallback(async () => {
+    if (id) {
+      await dispatch(fetchContactInfo(id));
+    }
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    void getInfo();
+  }, [getInfo]);
+
+  useEffect(() => {
+    if (contactInfo) {
+      form.setFieldsValue(contactInfo);
+      setImagePreview(contactInfo.image);
+    }
+  }, [contactInfo, form]);
+
+  useEffect(() => {
+    if (!id) {
+      form.resetFields();
+      setImagePreview('');
+    }
+  }, [id, form]);
 
   const onFinish = async (contact: IContact) => {
     if (id) {
@@ -25,11 +52,9 @@ export const ContactForm = () => {
     navigate('/');
   };
 
-  const imageChange = (url: string) => {
-    setImagePreview((prevState) => (prevState += url));
+  const onCancel = () => {
+    navigate('/');
   };
-
-  const onCancel = () => navigate('/');
 
   return (
     <Form layout={'vertical'} onFinish={onFinish} form={form}>
@@ -40,7 +65,7 @@ export const ContactForm = () => {
           name={'name'}
           rules={[{ required: true, message: 'This is a required field…' }]}
         >
-          <Input placeholder={'Enter name…'} autoComplete={'off'} />
+          <Input placeholder={'Enter name…'} autoComplete={'off'} disabled={isLoading} />
         </Form.Item>
 
         <Form.Item<IContact>
@@ -58,7 +83,7 @@ export const ContactForm = () => {
           name={'email'}
           rules={[{ required: true, message: 'This is a required field…', type: 'email' }]}
         >
-          <Input placeholder={'Enter email…'} autoComplete={'off'} />
+          <Input placeholder={'Enter email…'} autoComplete={'off'} disabled={isLoading} />
         </Form.Item>
 
         <Form.Item<IContact>
@@ -70,7 +95,8 @@ export const ContactForm = () => {
           <Input
             placeholder={'Enter image url…'}
             autoComplete={'off'}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => imageChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setImagePreview(e.target.value)}
+            disabled={isLoading}
           />
         </Form.Item>
 
@@ -82,7 +108,7 @@ export const ContactForm = () => {
           )}
         </Form.Item>
 
-        <Button type={'primary'} htmlType={'submit'} loading={isCreating}>
+        <Button type={'primary'} htmlType={'submit'} loading={isCreating || isLoading}>
           Save
         </Button>
         <Button onClick={onCancel} danger>
