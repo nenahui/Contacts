@@ -1,15 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { IContact } from '../../types';
 import { createContact } from './contactFormThunks';
 
 export interface ContactState {
-  contacts: IContact[];
   isLoading: boolean;
   isCreating: boolean;
 }
 
 const initialState: ContactState = {
-  contacts: [],
   isLoading: false,
   isCreating: false,
 };

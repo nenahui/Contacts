@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { contactReducer } from '../feautres/ContactForm/contactFormSlice';
+import { homeReducer } from '../feautres/Home/homeSlice';
 
 export const store = configureStore({
   reducer: {
     contact: contactReducer,
+    home: homeReducer,
   },
 });
 
